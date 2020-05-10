@@ -34,8 +34,22 @@ def get_time_end(url_arg):
         return str(e)
     ssl_sock.context.get_ciphers()
     cert = ssl_sock.getpeercert()
-    
-    return dateparser.parse(cert["notAfter"])
+    status = False
+    possible = []
+    for submain in (cert['subject']):
+      for sub in submain:
+        if sub[0] == "commonName":
+          possible.append(sub[1])
+          if sub[1] == url:
+            status = True
+    for sub in (cert["subjectAltName"]):
+        if sub[0] == "DNS":
+          possible.append(sub[1])
+          if sub[1] == url:
+            status = True
+    if status:
+      return dateparser.parse(cert["notAfter"])
+    return "not good url: "+",".join(possible)
 
     
 
