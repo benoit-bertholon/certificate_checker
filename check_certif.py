@@ -42,11 +42,17 @@ def get_time_end(url_arg):
           possible.append(sub[1])
           if sub[1] == url:
             status = True
+          if sub[1].split(".")[0] == "*":
+            if ".".join(sub[1].split(".")[1:]) == ".".join(url[1].split(".")[1:]):
+              status = True
     for sub in (cert["subjectAltName"]):
         if sub[0] == "DNS":
           possible.append(sub[1])
           if sub[1] == url:
             status = True
+          if sub[1].split(".")[0] == "*":
+            if ".".join(sub[1].split(".")[1:]) == ".".join(url.split(".")[1:]):
+              status = True
     if status:
       return dateparser.parse(cert["notAfter"])
     return "not good url: "+",".join(possible)
